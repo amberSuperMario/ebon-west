@@ -30,15 +30,14 @@ void setupMap()
     {
         for(int x = 1; x < MAP_WIDTH-1; x++)
         {
-            // 45% of the time, carve out a floor
+            // 50% of the time, carve out a floor
             int num = 1 + rand() % 100;
-            if(num <= 45)
+            if(num <= 50)
             {
                 map[y][x].ch = '.';
                 map[y][x].walkable = true;
                 map_cpy[y][x].ch = '.';
                 map_cpy[y][x].walkable = true;
-
             }
         }
     }
@@ -76,15 +75,21 @@ void refineMap(int cycles)
                 // Bottom-right
                 if(map[y+1][x+1].ch == '#') num++;
 
-                if(num <= 3)
+                if(map[y][x].ch == '#')
                 {
-                    map_cpy[y][x].ch = '.';
-                    map_cpy[y][x].walkable = true;
+                    if(num <= 3)
+                    {
+                        map_cpy[y][x].ch = '.';
+                        map_cpy[y][x].walkable = false;
+                    }
                 }
-                else if(num > 5)
+                else if(map[y][x].ch == '.')
                 {
-                    map_cpy[y][x].ch = '#';
-                    map_cpy[y][x].walkable = false;
+                    if(num > 4)
+                    {
+                        map_cpy[y][x].ch = '#';
+                        map_cpy[y][x].walkable = false;
+                    }
                 }
             }
         }
@@ -100,6 +105,11 @@ void refineMap(int cycles)
 
         curCycle++;
     }
+}
+
+void floodFill(Position coord)
+{
+
 }
 
 void freeMap()

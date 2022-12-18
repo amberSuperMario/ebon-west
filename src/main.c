@@ -11,7 +11,6 @@ int main() {
 
     createMapTiles();
     setupMap();
-    refineMap(5);
     player = createPlayer(start_pos);
 
     gameLoop();

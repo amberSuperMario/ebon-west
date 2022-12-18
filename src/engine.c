@@ -19,6 +19,11 @@ void gameLoop()
         {
             break;
         }
+        else if(ch == 'g')
+        {
+            // iterate on map
+            refineMap(1);
+        }
 
         handleInput(ch);
         drawEverything();
