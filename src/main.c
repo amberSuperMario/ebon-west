@@ -6,12 +6,15 @@ const int MAP_WIDTH = 100;
 Entity* player;
 
 int main() {
-    Position start_pos = { 1, 1 };
     cursesSetup();
 
     createMapTiles();
     setupMap();
-    player = createPlayer(start_pos);
+    refineMap(20);
+
+    Position startPos = map_getStartPos();
+    printf("X: %d, Y: %d", startPos.x, startPos.y);
+    player = createPlayer(startPos);
 
     gameLoop();
 

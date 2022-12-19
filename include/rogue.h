@@ -4,6 +4,12 @@
 #include <ncurses.h>
 #include <stdlib.h>
 #include <time.h> // used for srand()
+#include <math.h>
+#include "vector.h"
+
+// color pairs
+#define VISIBLE_COLOR 1
+#define SEEN_COLOR 2
 
 typedef struct
 {
@@ -13,20 +19,36 @@ typedef struct
 
 typedef struct
 {
+    int color;
     char ch;
     bool walkable;
+    bool transparent;
+    bool visible;
+    bool seen;
+    int toughness; // used for tunneling with a shovel, pickaxe, etc.
 } Tile;
 
 typedef struct
 {
+    int color;
     Position pos;
     char ch;
 } Entity;
 
+
+
 // draw.c
 void drawMap();
-void drawEntity(Entity* entity);
+void drawEntity(Entity*);
 void drawEverything();
+
+// fov.c
+void makeFOV(Entity*);
+void clearFOV(Entity*);
+int getDistance(Position, Position);
+bool isInMap(int, int);
+bool lineOfSight(Position, Position);
+int getSign(int);
 
 // engine.c
 void cursesSetup();
@@ -34,20 +56,23 @@ void gameLoop();
 void closeGame();
 
 // player.c
-Entity* createPlayer(Position start_pos);
-void handleInput(int input);
-void movePlayer(Position newPos);
+Entity* createPlayer(Position);
+void handleInput(int);
+void movePlayer(Position);
 
 // map.c
 void createMapTiles();
 void setupMap();
-void refineMap(int cycles);
+void refineMap(int);
 void freeMap();
+Position map_getStartPos();
+
 
 // externs
+extern Entity* player;
+// map
 extern const int MAP_HEIGHT;
 extern const int MAP_WIDTH;
-extern Entity* player;
 extern Tile** map;
 extern Tile** map_cpy; // used to modify the map during iteration
 
