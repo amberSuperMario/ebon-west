@@ -66,7 +66,7 @@ void createMapTiles();
 void setupMap();
 void refineMap(int);
 void freeMap();
-void map_floodFill(Position);
+void map_floodFill(Position, Vector*);
 void map_identifySegments();
 Position map_getStartPos();
 int map_mainSegmentIndex();

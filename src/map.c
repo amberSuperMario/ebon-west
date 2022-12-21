@@ -109,7 +109,7 @@ Position map_getStartPos()
     }
 }
 
-void map_floodFill(Position pos)
+void map_floodFill(Position pos, Vector* segment)
 {
     if(map_toFill[pos.y][pos.x].ch != '.')
     {
@@ -119,6 +119,7 @@ void map_floodFill(Position pos)
     }
 
     map_toFill[pos.y][pos.x].ch = '#';
+    vector_add(segment, &pos);
 
     Position north = { pos.y-1, pos.x };
     Position south = { pos.y+1, pos.x };
@@ -127,19 +128,19 @@ void map_floodFill(Position pos)
 
     if(north.y > 0 && map_toFill[north.y][north.x].ch == '.')
     {
-        map_floodFill(north);
+        map_floodFill(north, segment);
     }
     if(south.y < MAP_HEIGHT - 1 && map_toFill[south.y][south.x].ch == '.')
     {
-        map_floodFill(south);
+        map_floodFill(south, segment);
     }
     if(east.x > 0 && map_toFill[east.y][east.x].ch == '.')
     {
-        map_floodFill(east);
+        map_floodFill(east, segment);
     }
     if(west.x < MAP_WIDTH - 1 && map_toFill[west.y][west.x].ch == '.')
     {
-        map_floodFill(west);
+        map_floodFill(west, segment);
     }
 }
 
@@ -175,7 +176,8 @@ void map_identifySegments()
                 // Tiles are never added to &current_segment...
                 vector_add(&map_segments, &current_segment);
                 Position new_pos = { y, x };
-                map_floodFill(new_pos);
+                map_floodFill(new_pos, &current_segment);
+                printf("/**NUMBER OF TILES IN SEGMENT: %d", vector_count(&current_segment));
             }
         }
     }

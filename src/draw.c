@@ -16,8 +16,7 @@ void drawMap()
             }
             else
             {
-                mvaddch(y, x, map[y][x].ch | map[y][x].color);
-                //mvaddch(y, x, ' ');
+                mvaddch(y, x, ' ');
             }
         }
     }
