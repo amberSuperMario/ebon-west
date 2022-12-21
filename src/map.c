@@ -148,21 +148,6 @@ void map_identifySegments()
 {
     vector_init(&map_segments);
 
-    Vector toFill;
-    vector_init(&toFill);
-
-    for(int y = 0; y < MAP_HEIGHT; y++)
-    {
-        Vector toFill_row;
-        vector_init(&toFill_row);
-        for(int x = 0; x < MAP_WIDTH; x++)
-        {
-            Position copied_pos = { y, x };
-            vector_add(&toFill_row, &copied_pos);
-        }
-        vector_add(&toFill, &toFill_row);
-    }
-
     int ground_count = 0;
     for(int y = 0; y < MAP_HEIGHT; y++)
     {
@@ -170,18 +155,23 @@ void map_identifySegments()
         {
             if(map_toFill[y][x].ch == '.')
             {
-                Vector current_segment;
-                vector_init(&current_segment);
-                vector_add(&map_segments, &current_segment);
+                Vector* segment = malloc(sizeof(Vector*));
+                vector_init(segment);
 
                 Position new_pos = { y, x };
-                map_floodFill(new_pos, &current_segment);
-                printf("/**NUMBER OF TILES IN SEGMENT: %d", vector_count(&current_segment));
+                map_floodFill(new_pos, segment);
+                vector_add(&map_segments, segment);
+                printf("/**NUMBER OF TILES IN SEGMENT: %d**/", vector_count(segment));
+                printf("/**NUMBER OF TILES @ 0: %d**/", vector_count(vector_get(&map_segments, 0)));
             }
         }
     }
 
     printf("/**NUMBER OF SEGMENTS IN MAP: %d**/", vector_count(&map_segments));
+    for(int i = 0; i < vector_count(&map_segments); i++)
+    {
+        printf("/**NUMBER OF TILES IN SEGMENT %d: %d**/", i, vector_count(vector_get(&map_segments, i)));
+    }
 }
 
 void refineMap(int cycles)

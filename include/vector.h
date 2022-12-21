@@ -1,7 +1,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#define VECTOR_INITIAL_LIMIT 4
+#define VECTOR_INITIAL_LIMIT 16
 
 typedef struct Vector
 {
