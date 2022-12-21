@@ -71,27 +71,26 @@ void setupMap()
     }
 }
 
-//int map_mainSegmentIndex()
-//{
-//    int main_segment_index = -1;
-//    int max_segment_size = 0;
-//
-//    for(int i = 0; i < vector_count(&map_segments); i++)
-//    {
-//        Vector* segment = (Vector*)vector_get(&map_segments, i);
-//        printf("/**MAP_SEGMENTS COUNT: %d**/", vector_count(&map_segments));
-//        int segment_size = vector_count(&segment);
-//        if(segment_size > max_segment_size)
-//        {
-//            printf("/**FOUND NEW BIGGEST MAP SEGMENT: %d**/", segment_size);
-//            max_segment_size = segment_size;
-//            main_segment_index = i;
-//        }
-//    }
-//
-//    printf("/**BIGGEST SEGMENT SIZE IS... %d**/", max_segment_size);
-//    return main_segment_index;
-//}
+int map_mainSegmentIndex()
+{
+    int main_segment_index = -1;
+    int max_segment_size = 0;
+
+    for(int i = 0; i < vector_count(&map_segments); i++)
+    {
+        Vector* segment = (Vector*)vector_get(&map_segments, i);
+        int segment_size = vector_count(segment);
+        if(segment_size > max_segment_size)
+        {
+            printf("/**FOUND NEW BIGGEST MAP SEGMENT: %d**/", segment_size);
+            max_segment_size = segment_size;
+            main_segment_index = i;
+        }
+    }
+
+    printf("/**BIGGEST SEGMENT SIZE IS... %d**/", max_segment_size);
+    return main_segment_index;
+}
 
 Position map_getStartPos()
 {

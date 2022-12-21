@@ -13,8 +13,7 @@ int main() {
     refineMap(20);
 
     map_identifySegments();
-
-    //int id = map_mainSegmentIndex();
+    int id = map_mainSegmentIndex();
 
     Position startPos = map_getStartPos();
     player = createPlayer(startPos);
