@@ -92,6 +92,33 @@ int map_mainSegmentIndex()
     return main_segment_index;
 }
 
+void map_removeDisconnectedSegments()
+{
+    int main_segment_index = map_mainSegmentIndex();
+    int segments_total = vector_count(&map_segments);
+
+    if(segments_total > 0)
+    {
+        for(int i = 0; i < segments_total; i++)
+        {
+            if(i != main_segment_index)
+            {
+                Vector* segment = (Vector*)vector_get(&map_segments, i);
+                for(int j = 0; j < vector_count(segment); j++)
+                {
+                    Position* pos = (Position*)vector_get(segment, j);
+                    printf("/**SEGPOS: %d, %d**/", pos->x, pos->y);
+                    map[pos->y][pos->x].ch = '#';
+                    map[pos->y][pos->x].walkable = false;
+                    map[pos->y][pos->x].transparent = false;
+                    map[pos->y][pos->x].visible = false;
+                    map[pos->y][pos->x].seen = false;
+                }
+            }
+        }
+    }
+}
+
 Position map_getStartPos()
 {
     bool found = false;
@@ -118,7 +145,10 @@ void map_floodFill(Position pos, Vector* segment)
     }
 
     map_toFill[pos.y][pos.x].ch = '#';
-    vector_add(segment, &pos);
+    Position* new_pos = malloc(sizeof(Position*));
+    new_pos->y = pos.y;
+    new_pos->x = pos.x;
+    vector_add(segment, new_pos);
 
     Position north = { pos.y-1, pos.x };
     Position south = { pos.y+1, pos.x };

@@ -32,6 +32,10 @@ void gameLoop()
             // iterate on map
             refineMap(1);
         }
+        else if(ch == 'r')
+        {
+            map_removeDisconnectedSegments();
+        }
 
         handleInput(ch);
         drawEverything();

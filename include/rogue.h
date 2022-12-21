@@ -68,6 +68,7 @@ void refineMap(int);
 void freeMap();
 void map_floodFill(Position, Vector*);
 void map_identifySegments();
+void map_removeDisconnectedSegments();
 Position map_getStartPos();
 int map_mainSegmentIndex();
 
