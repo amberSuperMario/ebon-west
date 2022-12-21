@@ -1,20 +1,27 @@
-#include <rogue.h>
+#include "rogue.h"
 
 Tile** map;
 Tile** map_cpy;
+Tile** map_toFill;
+
+Vector map_segments;
 
 void createMapTiles()
 {
     map = calloc(MAP_HEIGHT, sizeof(Tile*));
     map_cpy = calloc(MAP_HEIGHT, sizeof(Tile*));
+    map_toFill = calloc(MAP_HEIGHT, sizeof(Tile*));
 
     for(int y = 0; y < MAP_HEIGHT; y++)
     {
         map[y] = calloc(MAP_WIDTH, sizeof(Tile));
         map_cpy[y] = calloc(MAP_WIDTH, sizeof(Tile));
+        map_toFill[y] = calloc(MAP_WIDTH, sizeof(Tile));
 
         for(int x = 0; x < MAP_WIDTH; x++)
         {
+            Position newPos = { y, x };
+            map[y][x].pos = newPos;
             map[y][x].ch = '#';
             map[y][x].color = COLOR_PAIR(VISIBLE_COLOR);
             map[y][x].walkable = false;
@@ -22,11 +29,15 @@ void createMapTiles()
             map[y][x].visible = false;
             map[y][x].seen = false;
 
+            map_cpy[y][x].pos = newPos;
             map_cpy[y][x].ch = '#';
             map_cpy[y][x].walkable = false;
             map_cpy[y][x].transparent = false;
             map_cpy[y][x].visible = false;
             map_cpy[y][x].seen = false;
+
+            map_toFill[y][x].pos = newPos;
+            map_toFill[y][x].ch = '#';
         }
     }
 }
@@ -53,10 +64,34 @@ void setupMap()
                 map_cpy[y][x].transparent = true;
                 map_cpy[y][x].visible = false;
                 map_cpy[y][x].seen = false;
+
+                map_toFill[y][x].ch = '.';
             }
         }
     }
 }
+
+//int map_mainSegmentIndex()
+//{
+//    int main_segment_index = -1;
+//    int max_segment_size = 0;
+//
+//    for(int i = 0; i < vector_count(&map_segments); i++)
+//    {
+//        Vector* segment = (Vector*)vector_get(&map_segments, i);
+//        printf("/**MAP_SEGMENTS COUNT: %d**/", vector_count(&map_segments));
+//        int segment_size = vector_count(&segment);
+//        if(segment_size > max_segment_size)
+//        {
+//            printf("/**FOUND NEW BIGGEST MAP SEGMENT: %d**/", segment_size);
+//            max_segment_size = segment_size;
+//            main_segment_index = i;
+//        }
+//    }
+//
+//    printf("/**BIGGEST SEGMENT SIZE IS... %d**/", max_segment_size);
+//    return main_segment_index;
+//}
 
 Position map_getStartPos()
 {
@@ -74,83 +109,79 @@ Position map_getStartPos()
     }
 }
 
-// Re-implement this whenever you feel like trying flood fill again.
-/*)void map_flood_fill(Position pos)
+void map_floodFill(Position pos)
 {
-    vector_init(&segments);
+    if(map_toFill[pos.y][pos.x].ch != '.')
+    {
+        printf("/**map_toFill[%d][%d] IS NOT A GROUND TILE...**/", pos.y, pos.x);
+        printf("/**map_toFill[%d][%d] IS: %c**/", pos.y, pos.x, map_toFill[pos.y][pos.x].ch);
+        return;
+    }
 
-    Vector segment;
-    vector_init(&segment);
+    map_toFill[pos.y][pos.x].ch = '#';
+
+    Position north = { pos.y-1, pos.x };
+    Position south = { pos.y+1, pos.x };
+    Position east = { pos.y, pos.x+1 };
+    Position west = { pos.y, pos.x-1 };
+
+    if(north.y > 0 && map_toFill[north.y][north.x].ch == '.')
+    {
+        map_floodFill(north);
+    }
+    if(south.y < MAP_HEIGHT - 1 && map_toFill[south.y][south.x].ch == '.')
+    {
+        map_floodFill(south);
+    }
+    if(east.x > 0 && map_toFill[east.y][east.x].ch == '.')
+    {
+        map_floodFill(east);
+    }
+    if(west.x < MAP_WIDTH - 1 && map_toFill[west.y][west.x].ch == '.')
+    {
+        map_floodFill(west);
+    }
+}
+
+void map_identifySegments()
+{
+    vector_init(&map_segments);
+
+    Vector current_segment;
+    vector_init(&current_segment);
 
     Vector toFill;
     vector_init(&toFill);
-    vector_add(&toFill, &pos);
 
-    while(vector_count(&toFill) > 0)
+    for(int y = 0; y < MAP_HEIGHT; y++)
     {
-        Position* posToCheck;  
-        printf("- toFill count pre: %d -", vector_count(&toFill));
-        posToCheck = (Position*)vector_get(&toFill, 0);
-        vector_remove(&toFill, 0);
-        if(!vector_contains(&segment, &posToCheck))
+        Vector toFill_row;
+        vector_init(&toFill_row);
+        for(int x = 0; x < MAP_WIDTH; x++)
         {
-            vector_add(&segment, &posToCheck); 
-
-            Position north = { posToCheck->y - 1, posToCheck->x };
-            Position south = { posToCheck->y + 1, posToCheck->x };
-            Position east = { posToCheck->y, posToCheck->x + 1 };
-            Position west = { posToCheck->y, posToCheck->x - 1 };
-
-            map[posToCheck->y][posToCheck->x].ch = 'o';
-
-            if(map_cpy[north.y][north.x].ch == '.')
-            {
-                if(!vector_contains(&toFill, &north))
-                {
-                    vector_add(&toFill, &north);
-                }
-            }
-            if(map_cpy[south.y][south.x].ch == '.')
-            {
-                if(!vector_contains(&toFill, &south))
-                {
-                    vector_add(&toFill, &south);
-                }
-            }
-            if(map_cpy[east.y][east.x].ch == '.')
-            {
-                if(!vector_contains(&toFill, &east))
-                {
-                    vector_add(&toFill, &east);
-                }
-            }
-            if(map_cpy[west.y][west.x].ch == '.')
-            {
-                if(!vector_contains(&toFill, &west))
-                {
-                    vector_add(&toFill, &west);
-                }
-            }
+            Position copied_pos = { y, x };
+            vector_add(&toFill_row, &copied_pos);
         }
-        printf("- toFill count post: %d -", vector_count(&toFill));
+        vector_add(&toFill, &toFill_row);
     }
-    vector_add(&segments, &segment);
-}*/
 
-/*void map_get_segments()
-{
+    int ground_count = 0;
     for(int y = 0; y < MAP_HEIGHT; y++)
     {
         for(int x = 0; x < MAP_WIDTH; x++)
         {
-            if(map[y][x].ch == '.') 
+            if(map_toFill[y][x].ch == '.')
             {
-                Position pos = { y, x };
-                map_flood_fill(pos);
+                // Tiles are never added to &current_segment...
+                vector_add(&map_segments, &current_segment);
+                Position new_pos = { y, x };
+                map_floodFill(new_pos);
             }
         }
     }
-}*/
+
+    printf("/**NUMBER OF SEGMENTS IN MAP: %d**/", vector_count(&map_segments));
+}
 
 void refineMap(int cycles)
 {
@@ -212,6 +243,8 @@ void refineMap(int cycles)
                 map[y][x].ch = map_cpy[y][x].ch;
                 map[y][x].walkable = map_cpy[y][x].walkable;
                 map[y][x].transparent = map_cpy[y][x].transparent;
+
+                map_toFill[y][x].ch = map_cpy[y][x].ch;
             }
         }
 
@@ -225,7 +258,9 @@ void freeMap()
     {
         free(map[y]);
         free(map_cpy[y]);
+        free(map_toFill[y]);
     }
     free(map);
     free(map_cpy);
+    free(map_toFill);
 }

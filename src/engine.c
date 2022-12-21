@@ -1,4 +1,4 @@
-#include <rogue.h>
+#include "rogue.h"
 
 void cursesSetup()
 {

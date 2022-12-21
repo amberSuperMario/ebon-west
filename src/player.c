@@ -1,4 +1,4 @@
-#include <rogue.h>
+#include "rogue.h"
 
 Entity* createPlayer(Position start_pos)
 {
@@ -18,19 +18,19 @@ void handleInput(int input)
     switch(input)
     {
         // Move up
-        case 'k':
+        case 'w':
             newPos.y--;
             break;
         // Move down
-        case 'j':
+        case 's':
             newPos.y++;
             break;
         // Move left
-        case 'h':
+        case 'a':
             newPos.x--;
             break;
         // Move right
-        case 'l':
+        case 'd':
             newPos.x++;
             break;
         default:

@@ -19,6 +19,7 @@ typedef struct
 
 typedef struct
 {
+    Position pos;
     int color;
     char ch;
     bool walkable;
@@ -65,7 +66,10 @@ void createMapTiles();
 void setupMap();
 void refineMap(int);
 void freeMap();
+void map_floodFill(Position);
+void map_identifySegments();
 Position map_getStartPos();
+int map_mainSegmentIndex();
 
 
 // externs
@@ -75,5 +79,7 @@ extern const int MAP_HEIGHT;
 extern const int MAP_WIDTH;
 extern Tile** map;
 extern Tile** map_cpy; // used to modify the map during iteration
+extern Vector map_segments;
+extern Vector current_segment;
 
 #endif

@@ -1,4 +1,4 @@
-#include <rogue.h>
+#include "rogue.h"
 
 const int MAP_HEIGHT = 25;
 const int MAP_WIDTH = 100;
@@ -12,8 +12,11 @@ int main() {
     setupMap();
     refineMap(20);
 
+    map_identifySegments();
+
+    //int id = map_mainSegmentIndex();
+
     Position startPos = map_getStartPos();
-    printf("X: %d, Y: %d", startPos.x, startPos.y);
     player = createPlayer(startPos);
 
     gameLoop();
