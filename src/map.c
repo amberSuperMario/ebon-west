@@ -148,9 +148,6 @@ void map_identifySegments()
 {
     vector_init(&map_segments);
 
-    Vector current_segment;
-    vector_init(&current_segment);
-
     Vector toFill;
     vector_init(&toFill);
 
@@ -173,8 +170,10 @@ void map_identifySegments()
         {
             if(map_toFill[y][x].ch == '.')
             {
-                // Tiles are never added to &current_segment...
+                Vector current_segment;
+                vector_init(&current_segment);
                 vector_add(&map_segments, &current_segment);
+
                 Position new_pos = { y, x };
                 map_floodFill(new_pos, &current_segment);
                 printf("/**NUMBER OF TILES IN SEGMENT: %d", vector_count(&current_segment));
