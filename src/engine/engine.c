@@ -1,6 +1,10 @@
-#include "rogue.h"
+#include "engine.h"
+#include "draw.h"
+#include "fov.h"
+#include "map.h"
+#include "player.h"
 
-void cursesSetup()
+void engine_cursesSetup()
 {
     initscr();
     noecho();
@@ -14,12 +18,12 @@ void cursesSetup()
     }
 }
 
-void gameLoop()
+void engine_gameLoop()
 {
     int ch;
 
-    makeFOV(player);
-    drawEverything();
+    fov_make(player);
+    draw_all();
 
     while(ch = getch())
     {
@@ -30,20 +34,21 @@ void gameLoop()
         else if(ch == 'g')
         {
             // iterate on map
-            refineMap(1);
+            map_refine(1);
         }
         else if(ch == 'r')
         {
-            map_removeDisconnectedSegments();
+            map_removeDisconnectedRooms();
         }
 
         handleInput(ch);
-        drawEverything();
+        draw_all();
     }
 }
 
-void closeGame()
+void engine_closeGame()
 {
     endwin();
     free(player);
+    map_free();
 }

@@ -1,6 +1,6 @@
-#include "rogue.h"
+#include "fov.h"
 
-void makeFOV(Entity* player)
+void fov_make(Entity* player)
 {
     int y, x, distance;
     int RADIUS = 15;
@@ -15,11 +15,11 @@ void makeFOV(Entity* player)
         {
             target.y = y;
             target.x = x;
-            distance = getDistance(player->pos, target);
+            distance = fov_getDistance(player->pos, target);
 
             if(distance < RADIUS)
             {
-                if(isInMap(y, x) && lineOfSight(player->pos, target))
+                if(fov_isInMap(y, x) && fov_lineOfSight(player->pos, target))
                 {
                     map[y][x].visible = true;
                     map[y][x].seen = true;
@@ -29,7 +29,7 @@ void makeFOV(Entity* player)
     }
 }
 
-void clearFOV(Entity* player)
+void fov_clear(Entity* player)
 {
     int y, x;
     int RADIUS = 15;
@@ -37,13 +37,13 @@ void clearFOV(Entity* player)
     {
         for(x = player->pos.x - RADIUS; x < player->pos.x + RADIUS; x++)
         {
-            if(isInMap(y, x))
+            if(fov_isInMap(y, x))
                 map[y][x].visible = false;
         }
     }
 }
 
-int getDistance(Position origin, Position target)
+int fov_getDistance(Position origin, Position target)
 {
     double dy, dx;
     int distance;
@@ -53,7 +53,7 @@ int getDistance(Position origin, Position target)
     return distance;
 }
 
-bool isInMap(int y, int x)
+bool fov_isInMap(int y, int x)
 {
     if((0 < y && y < MAP_HEIGHT - 1) && (0 < x && 0 < MAP_WIDTH - 1))
     {
@@ -62,7 +62,7 @@ bool isInMap(int y, int x)
     return false;
 }
 
-bool lineOfSight(Position origin, Position target)
+bool fov_lineOfSight(Position origin, Position target)
 {
     int t, x, y, abs_delta_x, abs_delta_y, sign_x, sign_y, delta_x, delta_y;
     

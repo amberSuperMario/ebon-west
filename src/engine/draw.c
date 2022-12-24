@@ -1,6 +1,6 @@
-#include "rogue.h"
+#include "draw.h"
 
-void drawMap()
+void draw_map()
 {
     for(int y = 0; y < MAP_HEIGHT; y++)
     {
@@ -23,7 +23,7 @@ void drawMap()
     }
 }
 
-void drawEntity(Entity* entity)
+void draw_entity(Entity* entity)
 {
     mvaddch(entity->pos.y, entity->pos.x, entity->ch | entity->color);
     /*
@@ -41,9 +41,9 @@ void drawEntity(Entity* entity)
     }*/
 }
 
-void drawEverything()
+void draw_all()
 {
     clear();
-    drawMap();
-    drawEntity(player);
+    draw_map();
+    draw_entity(player);
 }

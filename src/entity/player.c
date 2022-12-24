@@ -1,4 +1,5 @@
-#include "rogue.h"
+#include "player.h"
+#include "fov.h"
 
 Entity* createPlayer(Position start_pos)
 {
@@ -43,9 +44,9 @@ void movePlayer(Position newPos)
 {
     if(map[newPos.y][newPos.x].walkable)
     {
-        clearFOV(player);
+        fov_clear(player);
         player->pos.y = newPos.y;
         player->pos.x = newPos.x;
-        makeFOV(player);
+        fov_make(player);
     }
 }

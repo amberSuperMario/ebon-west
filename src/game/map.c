@@ -1,12 +1,13 @@
 #include "rogue.h"
+#include "map.h"
 
 Tile** map;
 Tile** map_cpy;
 Tile** map_toFill;
 
-Vector map_segments;
+Vector map_rooms;
 
-void createMapTiles()
+void map_createTiles()
 {
     map = calloc(MAP_HEIGHT, sizeof(Tile*));
     map_cpy = calloc(MAP_HEIGHT, sizeof(Tile*));
@@ -42,7 +43,7 @@ void createMapTiles()
     }
 }
 
-void setupMap()
+void map_setup()
 {
     srand(time(0));
     for(int y = 1; y < MAP_HEIGHT-1; y++)
@@ -71,43 +72,43 @@ void setupMap()
     }
 }
 
-int map_mainSegmentIndex()
+int map_mainRoomIndex()
 {
-    int main_segment_index = -1;
-    int max_segment_size = 0;
+    int main_room_index = -1;
+    int max_room_size = 0;
 
-    for(int i = 0; i < vector_count(&map_segments); i++)
+    for(int i = 0; i < vector_count(&map_rooms); i++)
     {
-        Vector* segment = (Vector*)vector_get(&map_segments, i);
-        int segment_size = vector_count(segment);
-        if(segment_size > max_segment_size)
+        Vector* room = (Vector*)vector_get(&map_rooms, i);
+        int room_size = vector_count(room);
+        if(room_size > max_room_size)
         {
-            printf("/**FOUND NEW BIGGEST MAP SEGMENT: %d**/", segment_size);
-            max_segment_size = segment_size;
-            main_segment_index = i;
+            printf("/**FOUND NEW BIGGEST MAP ROOM: %d**/", room_size);
+            max_room_size = room_size;
+            main_room_index = i;
         }
     }
 
-    printf("/**BIGGEST SEGMENT SIZE IS... %d**/", max_segment_size);
-    return main_segment_index;
+    printf("/**BIGGEST ROOM SEGMENT SIZE IS... %d**/", max_room_size);
+    return main_room_index;
 }
 
-void map_removeDisconnectedSegments()
+void map_removeDisconnectedRooms()
 {
-    int main_segment_index = map_mainSegmentIndex();
-    int segments_total = vector_count(&map_segments);
+    int main_room_index = map_mainRoomIndex();
+    int rooms_total = vector_count(&map_rooms);
 
-    if(segments_total > 0)
+    if(rooms_total > 0)
     {
-        for(int i = 0; i < segments_total; i++)
+        for(int i = 0; i < rooms_total; i++)
         {
-            if(i != main_segment_index)
+            if(i != main_room_index)
             {
-                Vector* segment = (Vector*)vector_get(&map_segments, i);
-                for(int j = 0; j < vector_count(segment); j++)
+                Vector* room = (Vector*)vector_get(&map_rooms, i);
+                for(int j = 0; j < vector_count(room); j++)
                 {
-                    Position* pos = (Position*)vector_get(segment, j);
-                    printf("/**SEGPOS: %d, %d**/", pos->x, pos->y);
+                    Position* pos = (Position*)vector_get(room, j);
+                    printf("/**ROOMPOS: %d, %d**/", pos->x, pos->y);
                     map[pos->y][pos->x].ch = '#';
                     map[pos->y][pos->x].walkable = false;
                     map[pos->y][pos->x].transparent = false;
@@ -135,7 +136,7 @@ Position map_getStartPos()
     }
 }
 
-void map_floodFill(Position pos, Vector* segment)
+void map_floodFill(Position pos, Vector* room)
 {
     if(map_toFill[pos.y][pos.x].ch != '.')
     {
@@ -148,7 +149,7 @@ void map_floodFill(Position pos, Vector* segment)
     Position* new_pos = malloc(sizeof(Position*));
     new_pos->y = pos.y;
     new_pos->x = pos.x;
-    vector_add(segment, new_pos);
+    vector_add(room, new_pos);
 
     Position north = { pos.y-1, pos.x };
     Position south = { pos.y+1, pos.x };
@@ -157,25 +158,25 @@ void map_floodFill(Position pos, Vector* segment)
 
     if(north.y > 0 && map_toFill[north.y][north.x].ch == '.')
     {
-        map_floodFill(north, segment);
+        map_floodFill(north, room);
     }
     if(south.y < MAP_HEIGHT - 1 && map_toFill[south.y][south.x].ch == '.')
     {
-        map_floodFill(south, segment);
+        map_floodFill(south, room);
     }
     if(east.x > 0 && map_toFill[east.y][east.x].ch == '.')
     {
-        map_floodFill(east, segment);
+        map_floodFill(east, room);
     }
     if(west.x < MAP_WIDTH - 1 && map_toFill[west.y][west.x].ch == '.')
     {
-        map_floodFill(west, segment);
+        map_floodFill(west, room);
     }
 }
 
-void map_identifySegments()
+void map_identifyRooms()
 {
-    vector_init(&map_segments);
+    vector_init(&map_rooms);
 
     int ground_count = 0;
     for(int y = 0; y < MAP_HEIGHT; y++)
@@ -184,26 +185,21 @@ void map_identifySegments()
         {
             if(map_toFill[y][x].ch == '.')
             {
-                Vector* segment = malloc(sizeof(Vector*));
-                vector_init(segment);
+                Vector* room = malloc(sizeof(Vector*));
+                vector_init(room);
 
                 Position new_pos = { y, x };
-                map_floodFill(new_pos, segment);
-                vector_add(&map_segments, segment);
-                printf("/**NUMBER OF TILES IN SEGMENT: %d**/", vector_count(segment));
-                printf("/**NUMBER OF TILES @ 0: %d**/", vector_count(vector_get(&map_segments, 0)));
+                map_floodFill(new_pos, room);
+                vector_add(&map_rooms, room);
+                printf("/**NUMBER OF TILES IN ROOM: %d**/", vector_count(room));
+                printf("/**NUMBER OF TILES @ 0: %d**/", vector_count(vector_get(&map_rooms, 0)));
             }
         }
     }
-
-    printf("/**NUMBER OF SEGMENTS IN MAP: %d**/", vector_count(&map_segments));
-    for(int i = 0; i < vector_count(&map_segments); i++)
-    {
-        printf("/**NUMBER OF TILES IN SEGMENT %d: %d**/", i, vector_count(vector_get(&map_segments, i)));
-    }
+    printf("/**MAP_ROOMS COUNT: %d**/", vector_count(&map_rooms));
 }
 
-void refineMap(int cycles)
+void map_refine(int cycles)
 {
     // For any given tile...
     // If it has 3 or fewer adjacent walls, turn it into a floor
@@ -272,7 +268,7 @@ void refineMap(int cycles)
     }
 }
 
-void freeMap()
+void map_free()
 {
     for(int y = 0; y < MAP_HEIGHT; y++)
     {

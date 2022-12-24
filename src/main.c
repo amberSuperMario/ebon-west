@@ -1,26 +1,29 @@
 #include "rogue.h"
 
+#include "engine.h"
+#include "map.h"
+#include "player.h"
+
 const int MAP_HEIGHT = 25;
 const int MAP_WIDTH = 100;
 
 Entity* player;
 
 int main() {
-    cursesSetup();
+    engine_cursesSetup();
 
-    createMapTiles();
-    setupMap();
-    refineMap(20);
+    map_createTiles();
+    map_setup();
+    map_refine(20);
 
-    map_identifySegments();
-    int id = map_mainSegmentIndex();
+    map_identifyRooms();
 
     Position startPos = map_getStartPos();
     player = createPlayer(startPos);
 
-    gameLoop();
+    engine_gameLoop();
 
-    closeGame();
+    engine_closeGame();
 
     return 0;
 }
