@@ -112,10 +112,27 @@ void draw_labels()
 		else 
 			name1 = player->name;
 
-		if(player->type == Slinger)
+		switch(player->type)
+		{
+		    case Slinger:
 			name3 = "Slinger";
-		else
+			break;
+		    case Breaker:
+			name3 = "Breaker";
+			break;
+		    case Mancer:
+			name3 = "Mancer";
+			break;
+		    case Brusher:
+			name3 = "Brusher";
+			break;
+		    case Watcher:
+			name3 = "Watcher";
+			break;
+		    default:
 			name3 = "Vagabond";
+			break;
+		}
 
 		strcpy(src, name1);
 		strcat(src, name2);
