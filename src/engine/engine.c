@@ -1,8 +1,4 @@
-#include "engine.h"
-#include "draw.h"
-#include "fov.h"
-#include "map.h"
-#include "player.h"
+#include "rogue.h"
 
 void engine_cursesSetup()
 {

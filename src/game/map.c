@@ -1,11 +1,11 @@
 #include "rogue.h"
-#include "map.h"
 
 Tile** map;
 Tile** map_cpy;
 Tile** map_toFill;
-
 Vector map_rooms;
+
+char* map_name;
 
 void map_createTiles()
 {
@@ -46,9 +46,9 @@ void map_createTiles()
 void map_setup()
 {
     srand(time(0));
-    for(int y = 1; y < MAP_HEIGHT-1; y++)
+    for(int y = 2; y < MAP_HEIGHT-2; y++)
     {
-        for(int x = 1; x < MAP_WIDTH-1; x++)
+        for(int x = 2; x < MAP_WIDTH-2; x++)
         {
             // 50% of the time, carve out a floor
             int num = 1 + rand() % 100;
@@ -266,6 +266,11 @@ void map_refine(int cycles)
 
         curCycle++;
     }
+}
+
+void map_addMonsters(Room* room)
+{
+
 }
 
 void map_free()

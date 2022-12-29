@@ -1,4 +1,4 @@
-#include "fov.h"
+#include "rogue.h"
 
 void fov_make(Entity* player)
 {

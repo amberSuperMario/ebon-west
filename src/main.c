@@ -1,9 +1,5 @@
 #include "rogue.h"
 
-#include "engine.h"
-#include "map.h"
-#include "player.h"
-
 const int MAP_HEIGHT = 25;
 const int MAP_WIDTH = 100;
 
@@ -19,7 +15,9 @@ int main() {
     map_identifyRooms();
 
     Position startPos = map_getStartPos();
-    player = createPlayer(startPos);
+	MonsterType startType = Slinger;
+    player = createPlayer(startPos, startType);
+	player->name = "Azalea";
 
     engine_gameLoop();
 
