@@ -5,6 +5,7 @@ void engine_cursesSetup()
     initscr();
     noecho();
     curs_set(0);
+	keypad(stdscr, TRUE);
 
     if(has_colors())
     {
@@ -23,18 +24,18 @@ void engine_gameLoop()
 
     while(ch = getch())
     {
-        if(ch == 'q')
+        if(ch == 'q') 
         {
             break;
         }
         else if(ch == 'g')
         {
             // iterate on map
-            map_refine(1);
+            //map_refine(1);
         }
         else if(ch == 'r')
         {
-            map_removeDisconnectedRooms();
+            //map_removeDisconnectedRooms();
         }
 
         handleInput(ch);

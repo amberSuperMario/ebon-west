@@ -64,19 +64,19 @@ void handleInput(int input)
     switch(input)
     {
         // Move up
-        case 'w':
+        case KEY_UP:
             newPos.y--;
             break;
         // Move down
-        case 's':
+        case KEY_DOWN:
             newPos.y++;
             break;
         // Move left
-        case 'a':
+        case KEY_LEFT:
             newPos.x--;
             break;
         // Move right
-        case 'd':
+        case KEY_RIGHT:
             newPos.x++;
             break;
         default:

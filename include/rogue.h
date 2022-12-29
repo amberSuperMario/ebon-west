@@ -27,6 +27,12 @@
 #define PLAYER		=   '@'
 
 // Enumerations
+typedef enum GameState {
+	Menu,
+	Character,
+	Active
+} GameState;
+
 typedef enum MonsterType {
 	Vagabond,
 	Slinger,
