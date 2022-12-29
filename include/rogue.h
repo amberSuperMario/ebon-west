@@ -4,7 +4,7 @@
 #define ROGUE_H
 
 #include <math.h>
-#include <ncursesw/curses.h>
+#include <ncurses.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h> // used for srand()
@@ -160,6 +160,9 @@ void map_removeDisconnectedRooms();
 int map_mainRoomIndex();
 Position map_getStartPos();
 void map_addMonsters(Room*);
+
+// Message log methods
+void message_log_add(char* message);
 
 // Player methods
 Entity* createPlayer(Position, MonsterType);

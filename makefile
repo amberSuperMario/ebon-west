@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -I/usr/include/ncursesw -lncursesw -lm -I./include/
+CFLAGS = -g -lncurses -lm -I./include/
 SOURCES = ./src/*.c ./src/*/*.c
 
 all: out run clean

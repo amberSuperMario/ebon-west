@@ -1,5 +1,7 @@
 #include "rogue.h"
 
+Vector message_log;
+
 void draw_border(int start_y, int start_x, int height, int width)
 {
 	int total_height = height+start_y;
@@ -86,11 +88,6 @@ void draw_entity(Entity* entity)
     }
 }
 
-void draw_stat_labels(int y, int x)
-{
-
-}
-
 void draw_text(int y, int x, char* message)
 {
 	mvprintw(y, x, message);
@@ -140,6 +137,18 @@ void draw_labels()
 	mvprintw(9, MAP_WIDTH+1, "Money:");
 	mvprintw(10, MAP_WIDTH+1, "Hit Points:");
 	mvprintw(11, MAP_WIDTH+1, "Level:");
+}
+
+void draw_message_log(int from_pos)
+{
+	Position screen_pos = { x: 0, y: 0 };
+	if(from_pos > vector_count(&message_log))
+		return;
+
+	for(int i = from_pos; i < vector_count(&message_log); i++)
+	{
+	;	
+	}
 }
 
 void draw_all()
